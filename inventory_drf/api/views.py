@@ -19,7 +19,6 @@ def apiOverview(request):
 
 	return Response(api_urls)
 
-
 @api_view(['GET'])
 def productList(request):
 	products = Product.objects.all().order_by('-id')
@@ -30,7 +29,6 @@ def productList(request):
 def productCreate(request):
 	serializer = ProductSerializer(data=request.data)
 	if serializer.is_valid():
-		print('valid')
 		serializer.save()
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
 	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -59,7 +57,7 @@ def productFilter(request):
 	products = Product.objects.filter(
 		product_cost__gte=request.data['minPrice'],
 		product_cost__lte=request.data['maxPrice'],
-		product_name=request.data['name']
+		product_name__contains=request.data['name']
 		) 
 	serializer = ProductSerializer(products, many=True)
 	return Response(serializer.data)
