@@ -91,16 +91,10 @@ const AddItems = (props) => {
                     initialValues={{ productName: '', productDescription: '', productPrice: '', productImage: '' }}
                     validationSchema={validateSchema}
                     onSubmit={(values, { setSubmitting, resetForm }) => {
-                        console.log('vals', values);
                         let api_call = ''
                         api_call = !isUpdate ? `${withConstant.API_URL}/api/product-create/` : `${withConstant.API_URL}/api/product-update/`
 
                         let data = new FormData();
-                        // data = {
-                        //     "product_name": values.productName,
-                        //     "product_description": values.productDescription,
-                        //     "product_cost": parseInt(values.productPrice),
-                        // }
                         data.append(
                             "product_name", values.productName
                         )
@@ -132,7 +126,7 @@ const AddItems = (props) => {
                         )
                             .then(function (response) {
                                 console.log(response);
-                                if (response.status == 200) {
+                                if (response.status == 201) {
                                     console.log("success");
                                     fetchApi()
                                     setFile("")

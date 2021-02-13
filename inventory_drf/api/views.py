@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import ProductSerializer
-
+from rest_framework import status
 from .models import Product
 # Create your views here.
 
@@ -15,6 +14,7 @@ def apiOverview(request):
 		'Create Product':'/product-create/',
 		'Update Product':'/product-update/',
 		'Delete Product':'/product-delete/',
+		'Filter': '/product-filter/'
 		}
 
 	return Response(api_urls)
@@ -28,13 +28,13 @@ def productList(request):
 
 @api_view(['POST'])
 def productCreate(request):
-	print('-----------------------------	',request.data)
 	serializer = ProductSerializer(data=request.data)
-	# print('$$$$$$$$$$$$$',serializer)
 	if serializer.is_valid():
 		print('valid')
 		serializer.save()
-	return Response(serializer.data)
+		return Response(serializer.data, status=status.HTTP_201_CREATED)
+	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+	
 
 
 @api_view(['POST'])
@@ -43,22 +43,25 @@ def productUpdate(request):
 	serializer = ProductSerializer(instance=product, data=request.data)
 	if serializer.is_valid():
 		serializer.save()
+		return Response(serializer.data, status=status.HTTP_201_CREATED)
+	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-	return Response(serializer.data)
 
 @api_view(['POST'])
 def productDelete(request):
 	product = Product.objects.get(id=request.data['id'])
 	product.delete()
-
-	return Response('Item succsesfully delete!')
+	return Response('Item succsesfully delete!', status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
 def productFilter(request):
-	products = Product.objects.filter(product_cost__gte=request.data['min-price'],product_cost__lte=request.data['max-price']) 
+	products = Product.objects.filter(
+		product_cost__gte=request.data['minPrice'],
+		product_cost__lte=request.data['maxPrice'],
+		product_name=request.data['name']
+		) 
 	serializer = ProductSerializer(products, many=True)
-	print(serializer.data)
 	return Response(serializer.data)
 
 
