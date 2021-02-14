@@ -76,7 +76,7 @@ const AddItems = (props) => {
             .required('Name field is manfatory'),
         productDescription: Yup.string()
             .required('Description field is manfatory'),
-        productPrice: Yup.number().required('Cost field is manfatory').positive().integer(),
+        productPrice: Yup.number().typeError('you must specify a number').required('Cost field is manfatory').positive().integer(),
     });
 
     // capture user inputs
