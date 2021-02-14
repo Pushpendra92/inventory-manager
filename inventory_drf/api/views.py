@@ -5,9 +5,8 @@ from rest_framework.response import Response
 from .serializers import ProductSerializer
 from rest_framework import status
 from .models import Product
-# Create your views here.
 
-
+# api overview
 @api_view(['GET'])
 def apiOverview(request):
     api_urls = {
@@ -21,13 +20,14 @@ def apiOverview(request):
     return Response(api_urls)
 
 
+# list api
 @api_view(['GET'])
 def productList(request):
     products = Product.objects.all().order_by('-id')
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
-
+# create api
 @api_view(['POST'])
 def productCreate(request):
     serializer = ProductSerializer(data=request.data)
@@ -37,6 +37,7 @@ def productCreate(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# update api
 @api_view(['POST'])
 def productUpdate(request):
     product = Product.objects.get(id=request.data['id'])
@@ -46,14 +47,14 @@ def productUpdate(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+# delete api
 @api_view(['POST'])
 def productDelete(request):
     product = Product.objects.get(id=request.data['id'])
     product.delete()
     return Response('Item succsesfully delete!', status=status.HTTP_200_OK)
 
-
+# delete api
 @api_view(['POST'])
 def productFilter(request):
     spec_filter = {}

@@ -14,11 +14,13 @@ const AddItems = (props) => {
     const [isUpdate, setIsUpdate] = useState(false)
     const [selectedItemId, setSelectedItemId] = useState()
 
+    // Fetch API on load
     useEffect(() => {
         fetchApi()
     }, [])
 
 
+    // list product api call
     const fetchApi = () => {
         axios.get(`${withConstant.API_URL}/api/product-list/`)
             .then((resp) => {
@@ -30,6 +32,7 @@ const AddItems = (props) => {
     }
 
 
+    // delete product api call
     const deleteItem = (id) => {
         console.log(id);
         axios.post(`${withConstant.API_URL}/api/product-delete/`,
@@ -67,6 +70,7 @@ const AddItems = (props) => {
   }
 `
 
+    // using yup to validate form fields values, submit button will be enabled only if the form values are valid
     const validateSchema = Yup.object().shape({
         productName: Yup.string()
             .required('Name field is manfatory'),
@@ -75,15 +79,13 @@ const AddItems = (props) => {
         productPrice: Yup.number().required('Cost field is manfatory').positive().integer(),
     });
 
+    // capture user inputs
     const changeFn = (e, fieldVal) => {
         console.log(e.target);
         fieldVal(e.target.name, e.target.value)
-        // setFieldValue()
     }
 
     const [file, setFile] = useState("")
-
-
 
     return (
         <div>
@@ -93,9 +95,11 @@ const AddItems = (props) => {
                     initialValues={{ productName: '', productDescription: '', productPrice: '', productImage: '' }}
                     validationSchema={validateSchema}
                     onSubmit={(values, { setSubmitting, resetForm }) => {
+                        // on submit of a form this function will be triggered, based on request bool val isUpdate, update or create api will be called
                         let api_call = ''
                         api_call = !isUpdate ? `${withConstant.API_URL}/api/product-create/` : `${withConstant.API_URL}/api/product-update/`
 
+                        // adding req body
                         let data = new FormData();
                         data.append(
                             "product_name", values.productName
@@ -113,16 +117,14 @@ const AddItems = (props) => {
                                 "product_image", file, file.name
                             )
                         }
-                        // data.append();
 
                         if (isUpdate) {
-                            // data['id'] = selectedItemId
+                            // adding mandatory id field in case of update
                             data.append(
                                 "id", selectedItemId
                             )
 
                         }
-                        console.log("api", api_call);
                         axios.post(api_call,
                             data
                         )
@@ -132,6 +134,7 @@ const AddItems = (props) => {
                                     console.log("success");
                                     fetchApi()
                                     setFile("")
+                                    // resetting the form on successful operation  
                                     resetForm({ values: "" })
                                     {
                                         isUpdate && setIsUpdate(false)
@@ -146,15 +149,6 @@ const AddItems = (props) => {
                     {({ values, isValid, dirty, isSubmitting, setFieldValue, resetForm }) => (
                         <Form>
                             <Text pt={10} fontSize="md">* fields are mandatory</Text>
-                            {/* <Input
-                                type="file"
-                                name="productImage"
-                                value={values.productImage}
-                                onChange={(event) => {
-                                    setFieldValue("productImage", event.target.files[0]);
-                                }}
-
-                            /> */}
                             {
                                 !isUpdate && (
                                     <Box py={5}>
@@ -252,17 +246,17 @@ const AddItems = (props) => {
                                                     <Td isNumeric>{item.product_cost}</Td>
                                                 </Link>
 
-                                                    <Td>
-                                                        <IconButton onClick={() => {
-                                                            setIsUpdate(true);
-                                                            setSelectedItemId(item.id);
-                                                            setFieldValue("productName", item.product_name)
-                                                            setFieldValue("productDescription", item.product_description)
-                                                            setFieldValue("productPrice", item.product_cost)
+                                                <Td>
+                                                    <IconButton onClick={() => {
+                                                        setIsUpdate(true);
+                                                        setSelectedItemId(item.id);
+                                                        setFieldValue("productName", item.product_name)
+                                                        setFieldValue("productDescription", item.product_description)
+                                                        setFieldValue("productPrice", item.product_cost)
 
-                                                        }} colorScheme="teal" mr="4" aria-label="Edit" icon={<AiFillEdit />} />
-                                                        <IconButton onClick={() => deleteItem(item.id)} colorScheme="teal" aria-label="Delete" icon={<AiFillDelete />} />
-                                                    </Td>
+                                                    }} colorScheme="teal" mr="4" aria-label="Edit" icon={<AiFillEdit />} />
+                                                    <IconButton onClick={() => deleteItem(item.id)} colorScheme="teal" aria-label="Delete" icon={<AiFillDelete />} />
+                                                </Td>
                                             </Tr>
                                         ))
                                     }

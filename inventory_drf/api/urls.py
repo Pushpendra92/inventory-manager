@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+# url mapping
 urlpatterns = [
 	path('', views.apiOverview, name="api-overview"),
 	path('product-create/', views.productCreate, name="product-create"),

@@ -93,7 +93,7 @@ class TestViews(APITestCase):
 
     def test_list_product(self):
         """
-        create a new Product object.
+        list product obj.
         """
         numberOfRecords = 2
         x = range(numberOfRecords)

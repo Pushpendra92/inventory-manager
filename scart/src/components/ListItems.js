@@ -35,6 +35,7 @@ const ListItems = (props) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef()
 
+    //trigger list api on page load
     useEffect(() => {
         axios.get(`${withConstant.API_URL}/api/product-list/`)
             .then((resp) => {
@@ -45,12 +46,13 @@ const ListItems = (props) => {
             })
     }, [])
 
+    // form validator schema
     const validateFilterSchema = Yup.object().shape({
         filterProductMinPrice: Yup.number().positive().integer(),
         filterProductMaxPrice: Yup.number().positive().integer(),
     });
 
-
+    // input capture
     const changeFn = (e, fieldVal) => {
         console.log(e.target.value);
         fieldVal(e.target.name, e.target.value)
@@ -80,7 +82,7 @@ const ListItems = (props) => {
                                 initialValues={{ filterProductName: '', filterProductMinPrice: '', filterProductMaxPrice: '' }}
                                 validationSchema={validateFilterSchema}
                                 onSubmit={(values, { setSubmitting, resetForm }) => {
-                                    console.log("hi");
+                                    //filter api
                                     let api_call;
                                     api_call = `${withConstant.API_URL}/api/product-filter/`
 
@@ -88,10 +90,6 @@ const ListItems = (props) => {
                                     data.name = values.filterProductName
                                     data.minPrice = values.filterProductMinPrice
                                     data.maxPrice = values.filterProductMaxPrice
-
-                                    console.log('data', data);
-                                    console.log('data', api_call);
-
                                     axios.post(api_call,
                                         data
                                     )
@@ -168,41 +166,41 @@ const ListItems = (props) => {
                 {
                     listItems.map((item, index) => (
                         <Box key={item.id} borderWidth="1px" borderRadius="lg" overflow="hidden">
-                        <Link to={{
-                            pathname: '/details',
-                            state: {
-                                items: { item }
-                            }
-                        }}>
-                            <Image src={withConstant.API_URL + item.product_image} alt="" />
+                            <Link to={{
+                                pathname: '/details',
+                                state: {
+                                    items: { item }
+                                }
+                            }}>
+                                <Image src={withConstant.API_URL + item.product_image} alt="" />
 
-                            <Box p="6">
-                                {
-                                    index <= 2 && (<Box>
-                                        <Badge borderRadius="full" px="2" colorScheme="teal">
-                                            New
+                                <Box p="6">
+                                    {
+                                        index <= 2 && (<Box>
+                                            <Badge borderRadius="full" px="2" colorScheme="teal">
+                                                New
                                         </Badge>
 
-                                    </Box>)
-                                }
+                                        </Box>)
+                                    }
 
 
-                                <Box
-                                    mt="1"
-                                    fontWeight="semibold"
-                                    as="h4"
-                                    lineHeight="tight"
-                                    isTruncated
-                                >
-                                    {item.product_name}
+                                    <Box
+                                        mt="1"
+                                        fontWeight="semibold"
+                                        as="h4"
+                                        lineHeight="tight"
+                                        isTruncated
+                                    >
+                                        {item.product_name}
+                                    </Box>
+
+                                    <Box>
+                                        {item.product_cost} $
                                 </Box>
 
-                                <Box>
-                                    {item.product_cost} $
                                 </Box>
-
-                            </Box>
-                        </Link>
+                            </Link>
                         </Box>
                     ))
                 }
