@@ -6,6 +6,8 @@ import { css, keyframes } from '@emotion/css'
 import axios from 'axios';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai'
 import * as withConstant from '../static/consts';
+import { Link } from 'react-router-dom';
+import './AddItems.css'
 
 const AddItems = (props) => {
     const { listItems, setListItems } = props
@@ -118,7 +120,7 @@ const AddItems = (props) => {
                             data.append(
                                 "id", selectedItemId
                             )
-                            
+
                         }
                         console.log("api", api_call);
                         axios.post(api_call,
@@ -143,7 +145,7 @@ const AddItems = (props) => {
                 >
                     {({ values, isValid, dirty, isSubmitting, setFieldValue, resetForm }) => (
                         <Form>
-                             <Text pt={10} fontSize="md">* fields are mandatory</Text>
+                            <Text pt={10} fontSize="md">* fields are mandatory</Text>
                             {/* <Input
                                 type="file"
                                 name="productImage"
@@ -186,7 +188,7 @@ const AddItems = (props) => {
                                 <ErrorMessage name="productDescription" />
                             </div>
                             <Field name="productPrice" my={1}
-                            placeholder="Enter cost *"
+                                placeholder="Enter cost *"
                                 as={Input}
                             />
                             <div
@@ -238,21 +240,29 @@ const AddItems = (props) => {
                                 <Tbody>
                                     {
                                         listItems.map((item) => (
-                                            <Tr ley={item.id}>
-                                                <Td>{item.product_name}</Td>
-                                                <Td>{item.product_description}</Td>
-                                                <Td isNumeric>{item.product_cost}</Td>
-                                                <Td>
-                                                    <IconButton onClick={() => {
-                                                        setIsUpdate(true);
-                                                        setSelectedItemId(item.id);
-                                                        setFieldValue("productName", item.product_name)
-                                                        setFieldValue("productDescription", item.product_description)
-                                                        setFieldValue("productPrice", item.product_cost)
+                                            <Tr key={item.id}>
+                                                <Link to={{
+                                                    pathname: '/details',
+                                                    state: {
+                                                        items: { item }
+                                                    }
+                                                }}>
+                                                    <Td>{item.product_name}</Td>
+                                                    <Td>{item.product_description}</Td>
+                                                    <Td isNumeric>{item.product_cost}</Td>
+                                                </Link>
 
-                                                    }} colorScheme="teal" mr="4" aria-label="Edit" icon={<AiFillEdit />} />
-                                                    <IconButton onClick={() => deleteItem(item.id)} colorScheme="teal" aria-label="Delete" icon={<AiFillDelete />} />
-                                                </Td>
+                                                    <Td>
+                                                        <IconButton onClick={() => {
+                                                            setIsUpdate(true);
+                                                            setSelectedItemId(item.id);
+                                                            setFieldValue("productName", item.product_name)
+                                                            setFieldValue("productDescription", item.product_description)
+                                                            setFieldValue("productPrice", item.product_cost)
+
+                                                        }} colorScheme="teal" mr="4" aria-label="Edit" icon={<AiFillEdit />} />
+                                                        <IconButton onClick={() => deleteItem(item.id)} colorScheme="teal" aria-label="Delete" icon={<AiFillDelete />} />
+                                                    </Td>
                                             </Tr>
                                         ))
                                     }

@@ -7,7 +7,7 @@ import * as withConstant from '../static/consts';
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { css, keyframes } from '@emotion/css'
 import * as Yup from 'yup';
-
+import { Link } from 'react-router-dom';
 
 
 const ListItems = (props) => {
@@ -168,6 +168,12 @@ const ListItems = (props) => {
                 {
                     listItems.map((item, index) => (
                         <Box key={item.id} borderWidth="1px" borderRadius="lg" overflow="hidden">
+                        <Link to={{
+                            pathname: '/details',
+                            state: {
+                                items: { item }
+                            }
+                        }}>
                             <Image src={withConstant.API_URL + item.product_image} alt="" />
 
                             <Box p="6">
@@ -196,6 +202,7 @@ const ListItems = (props) => {
                                 </Box>
 
                             </Box>
+                        </Link>
                         </Box>
                     ))
                 }
