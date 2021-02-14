@@ -172,13 +172,19 @@ const ListItems = (props) => {
                                     items: { item }
                                 }
                             }}>
-                                <Image src={withConstant.API_URL + item.product_image} alt="" />
+                                <Image height="250px" src={withConstant.API_URL + item.product_image} alt="" />
 
                                 <Box p="6">
                                     {
-                                        index <= 2 && (<Box>
+                                        index <= 2 ? (<Box>
                                             <Badge borderRadius="full" px="2" colorScheme="teal">
                                                 New
+                                        </Badge>
+
+                                        </Box>) :
+                                        (<Box>
+                                            <Badge borderRadius="full" px="2" colorScheme="teal">
+                                                
                                         </Badge>
 
                                         </Box>)
@@ -194,11 +200,16 @@ const ListItems = (props) => {
                                     >
                                         {item.product_name}
                                     </Box>
-
-                                    <Box>
-                                        {item.product_cost} $
-                                </Box>
-
+                                    <Box
+                                        mt="1"
+                                        fontWeight="bold"
+                                        color= 'teal'
+                                        as="h4"
+                                        lineHeight="tight"
+                                        isTruncated
+                                    >
+                                        Click for more info
+                                    </Box>
                                 </Box>
                             </Link>
                         </Box>
